@@ -1,12 +1,27 @@
 import React from 'react'
 import Wrapper from '../assets/wrappers/SmallSidebar'
 import { useDashboardContext } from '../pages/DashboardLayout'
+import { FaTimes } from 'react-icons/fa'
+import Logo from './Logo'
+import NavLinks from './NavLinks'
 
 const SmallSidebar = () => {
-    const data = useDashboardContext()
-    // console.log(data)
+    const { showSidebar, toggleSidebar } = useDashboardContext()
+
     return (
-        <Wrapper>SmallSidebar</Wrapper>
+        <Wrapper>
+            <div className={showSidebar ? "sidebar-container" : "show-sidebar"}>
+                <div className="content">
+                    <button type="button" className={"close-btn"} onClick={toggleSidebar}>
+                        <FaTimes />
+                    </button>
+                    <header>
+                        <Logo />
+                    </header>
+                    <NavLinks />
+                </div>
+            </div>
+        </Wrapper>
     )
 }
 
