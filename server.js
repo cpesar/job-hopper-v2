@@ -1,9 +1,10 @@
-
+import 'express-async-errors'
 import * as dotenv from 'dotenv';
 dotenv.config()
 import express from 'express';
 const app = express();
 import morgan from 'morgan';
+app.use(morgan('tiny'))
 import mongoose from 'mongoose'
 
 //Routers
