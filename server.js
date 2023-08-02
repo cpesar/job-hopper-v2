@@ -6,6 +6,7 @@ const app = express();
 import morgan from 'morgan';
 app.use(morgan('tiny'))
 import mongoose from 'mongoose'
+import { body, validationResult } from 'express-validator'
 
 //Routers
 import jobRouter from './routes/jobRouter.js'
@@ -23,10 +24,26 @@ app.get('/', (req, res) => {
     res.send('Hello user');
 });
 
-app.post('/', (req, res) => {
-    console.log(req)
-    res.json({ message: 'Data received', data: req.body })
-})
+app.post('/api/v1/test',
+    [
+        body('name')
+            .notEmpty()
+            .withMessage('name is required')
+            .isLength({ min: 50 })
+            .withMessage('name must be at least 50 characters long')
+    ],
+    (req, res, next) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            const errorMessages = errors.array().map((errors) => errors.msg)
+            return res.status(404).json({ errors: errorMessages })
+        }
+        next()
+    },
+    (req, res) => {
+        const { name } = req.body
+        res.json({ message: `hello ${name}` })
+    })
 
 app.use('/api/v1/jobs', jobRouter)
 
