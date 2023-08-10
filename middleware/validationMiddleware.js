@@ -47,16 +47,20 @@ export const validateJobInput = withValidationErrors([
 ])
 
 export const validateIdParam = withValidationErrors([
-    param('id').custom(async (value) => {
-        const isValid = mongoose.Types.ObjectId.isValid(value);
-        if (!isValid) throw new BadRequestError('invalid MongoDB id')
-        const job = await Job.findById(value);
-        if (!job) throw new NotFoundError(`no job with id : ${id}`)
-    })
+    param('id')
+        .custom(async (value) => {
+            const isValid = mongoose.Types.ObjectId.isValid(value);
+            if (!isValid) throw new BadRequestError('invalid MongoDB id')
+
+            const job = await Job.findById(value);
+            if (!job) throw new NotFoundError(`no job with id : ${id}`)
+        })
 ])
 
 export const validateRegisterInput = withValidationErrors([
-    body('name').notEmpty().withMessage('name is required'),
+    body('name')
+        .notEmpty()
+        .withMessage('name is required'),
     body('email')
         .notEmpty()
         .withMessage('email is required')
@@ -80,4 +84,15 @@ export const validateRegisterInput = withValidationErrors([
     body('lastName')
         .notEmpty()
         .withMessage('last name is required'),
+])
+
+export const validateLoginInput = withValidationErrors([
+    body('email')
+        .notEmpty()
+        .withMessage('email is required')
+        .isEmail()
+        .withMessage('invalid email format'),
+    body('password')
+        .notEmpty()
+        .withMessage('password is required')
 ])
