@@ -15,15 +15,18 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+    // Check if user exists
     const user = await User.findOne({ email: req.body.email })
+    if (!user) throw new UnauthenticatedError('invalid credentials');
 
-    if (!user) throw new UnauthenticatedError('invalid credentials')
-
+    //Check if password is correct
     const isPasswordCorrect = await comparePassword(
         req.body.password,
         user.password
-    )
+    );
+    if (!isPasswordCorrect) throw new UnauthenticatedError('invalid credentials');
+    res.send('login route');
 
-    if (!isPasswordCorrect) throw new UnauthenticatedError('invalid creds')
-    res.send('login route')
+    // const isValidUser = user && (await comparePassword(req.body.password, user.password))
+    // if (!isValidUser) throw new UnauthenticatedError('invalid credz')
 }
