@@ -33,10 +33,21 @@ export const login = async (req, res) => {
     //Frontend will store the token and then send to the backend to decode it
     //test at jwt.io to see what data/payload is associated with the token
     const token = createJWT({ userId: user._id, role: user.role })
-    res.json({ token })
+    // res.json({ token })
     // console.log(token)
 
-    // res.send('login route');
+    //Represents milliseconds in a day
+    const oneDay = 1000 * 60 * 60 * 24
+
+    //Create a cookie
+    res.cookie('token', token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + oneDay),
+        secure: process.env.NODE_ENV === 'production'
+    })
+    res.status(StatusCodes.OK).json({ msg: 'user logged in' })
+
+
 
 }
 
